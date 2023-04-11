@@ -1,0 +1,42 @@
+<div class="row mt-5">
+
+    <div class="col-3"></div>
+    <div class="col-6">
+
+        <h3>Add new field</h3>
+
+
+
+
+  <form action="/admin/add-fields" method="post" enctype="multipart/form-data">
+      <div class="form-outline mb-4">
+        <input type="text" id="form1Example1" class="form-control" name="fieldName" />
+        <label class="form-label" for="form1Example1">Field Name</label>
+      </div>
+
+      <div class="form-outline mb-4">
+        <input type="text" id="form1Example2" class="form-control" name="fieldLocation" />
+        <label class="form-label"  for="form1Example2">Place</label>
+      </div>
+
+       <div class="form-outline mb-4">
+        <input type="number" id="form1Example2" class="form-control" name="fieldPrice" />
+        <label class="form-label"  for="form1Example2">Hourly Price</label>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label for="formFileSm" class="form-label">Upload Field Picture</label>
+        <input
+          class="form-control form-control-sm"
+          id="formFileSm"
+          type="file"
+          name="fieldPicture"
+        />
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-primary btn-block">Create Fields</button>
+  </form>
+</div>
+  <div class="col-3"></div>
+</div>

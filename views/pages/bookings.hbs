@@ -1,0 +1,25 @@
+<table class="table mt-4">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Turf Name</th>
+      <th scope="col">Date</th>
+      <th scope="col">Time</th>
+      <th scope="col">Amount Paid</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    {{#each bookings}}
+    <tr>
+      <th scope="row">{{@index}}</th>
+      <td>{{fieldName}}</td>
+      <td>{{date}}</td>
+      <td>@mdo</td>
+      <td>Rs {{price}}</td>
+
+    </tr>
+    {{/each}}
+
+  </tbody>
+</table>

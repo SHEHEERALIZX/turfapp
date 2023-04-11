@@ -1,0 +1,301 @@
+<section class="h-100 h-custom">
+  <div class="container h-100 py-5">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <div class="table-responsive">
+                        {{#if field}}
+
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="h5">Shopping Bag</th>
+                <th scope="col" class="">Hourly Price</th>
+                <th scope="col">Starting Time</th>
+                <th scope="col">Ending Time</th>
+                <th scope="col">Date</th>
+                <th scope="col">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">
+                  <div class="d-flex align-items-center">
+                    <img
+                      src="/{{field.fieldPicture}}"
+                      class="img-fluid rounded-3"
+                      style="width: 120px;"
+                      alt="Book"
+                    />
+                    <div class="flex-column ms-4">
+                      <p class="mb-2">Thinking, Fast and Slow</p>
+                      <p class="mb-0">{{field.name}}</p>
+                    </div>
+                  </div>
+                </th>
+                <td class="align-middle">
+                  <p class="mb-0" style="font-weight: 500;" id="hourlyprice">{{field.price}}/hr</p>
+
+                <td class="align-middle">
+                    <select name="" id="startTime" required>
+                        <option value="" selected disabled>Choose </option>
+                        <option value="10">10:00 AM</option>
+                        <option value="11">11:00 AM</option>
+                        <option value="12">12:00 PM</option>
+                        <option value="13">1:00 PM</option>
+                        <option value="14">2:00 PM</option>
+                        <option value="15">3:00 PM</option>
+                        <option value="16">4:00 PM</option>
+                        <option value="17">5:00 PM</option>
+                        <option value="18">6:00 PM</option>
+                        <option value="19">7:00 PM</option>
+                        <option value="20">8:00 PM</option>
+                        <option value="21">9:00 PM</option>
+                        <option value="22">10:00 PM</option>
+                        <option value="23">11:00 PM</option>
+                        <option value="24">12:00 AM</option>
+                    </select>
+                </td>
+                <td class="align-middle">
+                    <select name="" id="endTime" required>
+                        <option value="" selected disabled>Choose </option>
+                        <option value="10">10:00 AM</option>
+                        <option value="11">11:00 AM</option>
+                        <option value="12">12:00 PM</option>
+                        <option value="13">1:00 PM</option>
+                        <option value="14">2:00 PM</option>
+                        <option value="15">3:00 PM</option>
+                        <option value="16">4:00 PM</option>
+                        <option value="17">5:00 PM</option>
+                        <option value="18">6:00 PM</option>
+                        <option value="19">7:00 PM</option>
+                        <option value="20">8:00 PM</option>
+                        <option value="21">9:00 PM</option>
+                        <option value="22">10:00 PM</option>
+                        <option value="23">11:00 PM</option>
+                        <option value="24">12:00 AM</option>
+                    </select>
+                </td>
+                <td class="align-middle">
+                    <input type="date" name="date" id="dateID" required >
+                </td>
+                <td class="align-middle">
+                    <p class="mb-0" style="font-weight: 500;" id="price">Rs: 0</p>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+            <p class="hidden" id="fieldID">{{field._id}}</p>
+
+            {{/if}}
+        </div>
+
+        <div
+          class="card shadow-2-strong mb-5 mb-lg-0"
+          style="border-radius: 16px;"
+        >
+          <div class="card-body p-4">
+
+            <div class="row">
+                <div class="col">
+                    <p class="mb-0">Discount 0</p>
+                    <p class="fw-bold" id="totalprice">Total Rs. 0 </p>
+
+                </div>
+              <div class="col">
+                <button type="submit" class="btn btn-primary btn-block btn-lg " id="booking-button" disabled>
+                  Confirm Booking
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<button type="button" class="hidden" data-mdb-toggle="modal" data-mdb-target="#exampleModal" id="successButton">
+  Launch demo modal
+</button>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center text-success" id="exampleModalLabel">Booking Successfull</h5>
+      </div>
+      <div class="modal-body">
+        <p>Booking SuccessFull</p>
+        <p id="bookingtime">Booking Time : </p>
+        <p id="bookingdate">Booking Date : </p>
+        <p id="bookingprice">Booking Price : </p>
+        <p id="bookingfield">Booking Field : </p>
+        <p class="text-primary" id="redirectelement">Redirect to Home in 3 seconds</p>
+         
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
+
+<script>
+
+    // onload reset startime and endtime in localstorage
+    window.onload = function() {
+        localStorage.setItem("startTime", "");
+        localStorage.setItem("endTime", "");
+        localStorage.setItem("date", "");
+        hourlyprice = document.getElementById("hourlyprice")
+        fieldID = document.getElementById("fieldID")
+        localStorage.setItem("fieldID", fieldID.innerHTML)
+        price = hourlyprice.innerHTML.split("/")[0]
+        localStorage.setItem("price", price)
+        dateID = document.getElementById("dateID")
+        dateID.min = new Date().toISOString().split("T")[0];
+        dateID.max = new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split("T")[0];
+    };
+
+
+    document.getElementById("startTime").addEventListener("change", function(){
+        console.log(this.value);
+        localStorage.setItem("startTime", this.value);
+        displayPrice()
+
+    });
+    document.getElementById("endTime").addEventListener("change", function(){
+        console.log(this.value);
+        localStorage.setItem("endTime", this.value);
+        displayPrice();
+    });
+
+    document.getElementById("dateID").addEventListener("change", function(){
+        console.log(this.value);
+        localStorage.setItem("date", this.value);
+        displayPrice();
+    });
+
+    // display price based on start time and end time
+    function displayPrice() {
+        var startTime = localStorage.getItem("startTime");
+        var endTime = localStorage.getItem("endTime");
+        var hourlyprice = localStorage.getItem("price");
+        button = document.getElementById('booking-button')
+        date = localStorage.getItem("date")
+        var price = 0;
+        if (startTime != "" && endTime != "" && date != "") {
+            if(startTime > endTime) {
+                alert("Start time should be less than end time");
+                return;
+            }
+
+            if(startTime == endTime) {
+                alert("Start time and end time should not be same");
+                return;
+            }
+
+            price = (endTime - startTime) * hourlyprice;
+            button.disabled = false;
+
+        }        
+        document.getElementById("price").innerHTML = "RS " + price;
+        document.getElementById("totalprice").innerHTML = "Total RS " + price;
+    }
+
+    // on click of booking button
+    document.getElementById("booking-button").addEventListener("click", function(){
+        var startTime = localStorage.getItem("startTime");
+        var endTime = localStorage.getItem("endTime");
+        var hourlyprice = localStorage.getItem("price");
+        var price = (endTime - startTime) * hourlyprice;
+        fieldID = localStorage.getItem("fieldID")
+        date = localStorage.getItem("date")
+
+        var data = {
+            "price": price,
+            "startTime": startTime,
+            "endTime": endTime,
+            "fieldID": fieldID,
+            "date": date
+        }
+        // send data to server
+        fetch(`/checkout/${fieldID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        }).then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+            if(data.status === 200) {
+
+
+                if(data.data.start > 12) {
+                    data.data.start = data.data.start - 12
+                    data.data.start = data.data.start + " PM";
+                }
+
+                if(data.data.end > 12) {
+                    data.data.end = data.data.end - 12;
+                    data.data.end = data.data.end + " PM";
+                }
+
+                if(data.data.start < 12) {
+                    data.data.start = data.data.start + " AM";
+                }
+
+                if(data.data.end < 12) {
+                    data.data.end = data.data.end + " AM";
+                }
+
+                if(data.data.start == 12) {
+                    data.data.start = data.data.start + " PM";
+                }
+
+                if(data.data.end == 12) {
+                    data.data.end = data.data.end + " PM";
+                }
+
+
+
+
+
+                document.getElementById("bookingtime").innerHTML = "Booking Time : " + data.data.start + " - " + data.data.end;
+                document.getElementById("bookingdate").innerHTML = "Booking Date : " + data.data.date;
+                document.getElementById("bookingprice").innerHTML = "Booking Price : " + data.data.price;
+                document.getElementById("bookingfield").innerHTML = "Booking Field : " + data.data.fieldName;
+
+                document.getElementById("successButton").click();
+
+                setTimeout(function(){ window.location.replace("/"); }, 3000);
+                document.getElementById("redirectelement").innerHTML = "Redirect to Home in 3 seconds";
+                setInterval(function(){
+                    var time = document.getElementById("redirectelement").innerHTML.split(" ")[4];
+                    time = time - 1;
+                    document.getElementById("redirectelement").innerHTML = "Redirect to Home in " + time + " seconds";
+                }, 1000);
+            }
+
+        })
+       
+
+    });
+
+
+
+</script>

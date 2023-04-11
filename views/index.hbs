@@ -1,0 +1,39 @@
+<div class="container mt-5">
+  <div class="row g-3">
+    {{#each fields}}
+    <div class="col-sm-3 col-md-6 col-lg-3">
+      <div class="card">
+        <div
+          class="bg-image hover-overlay ripple"
+          data-mdb-ripple-color="light"
+        >
+          <img
+            src="{{fieldPicture}}"
+            class="img-fluid"
+          />
+          <a href="#!">
+            <div
+              class="mask"
+              style="background-color: rgba(251, 251, 251, 0.15);"
+            ></div>
+          </a>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{name}}</h5>
+          <p class="card-text m-0">RS {{price}}/hr</p>
+          <p class="card-text m-0">Location: {{location}}</p>
+
+          {{!-- <p class="card-text">Some quick example text to build on the card
+            title and make up the bulk of the card's content.</p> --}}
+          <div class="d-flex flex-column ">
+              <a href="/checkout/{{_id}}" class="btn btn-warning mt-2 justify-content-center ">Book Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+
+
+   
+  </div>
+</div>
