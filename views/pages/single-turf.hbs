@@ -9,7 +9,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col" class="h5">Shopping Bag</th>
+                <th scope="col" class="h5">Turf Booking</th>
                 <th scope="col" class="">Hourly Price</th>
                 <th scope="col">Starting Time</th>
                 <th scope="col">Ending Time</th>
@@ -28,8 +28,7 @@
                       alt="Book"
                     />
                     <div class="flex-column ms-4">
-                      <p class="mb-2">Thinking, Fast and Slow</p>
-                      <p class="mb-0">{{field.name}}</p>
+                      <p class="mb-2">{{field.name}}</p>
                     </div>
                   </div>
                 </th>
@@ -118,6 +117,24 @@
     </div>
   </div>
 </section>
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Date</th>
+      <th scope="col">Time</th>
+
+    </tr>
+  </thead>
+  <tbody id="table-body">
+  </tbody>
+</table>
+
+
+  
+
 
 <button type="button" class="hidden" data-mdb-toggle="modal" data-mdb-target="#exampleModal" id="successButton">
   Launch demo modal
@@ -289,12 +306,84 @@
                     time = time - 1;
                     document.getElementById("redirectelement").innerHTML = "Redirect to Home in " + time + " seconds";
                 }, 1000);
+            } else if(data.status === 500) {
+                alert(data.message);
+            } else {
+                alert("Something went wrong");
             }
 
         })
        
 
     });
+
+    fieldID = localStorage.getItem("fieldID")
+
+
+    // get all the fields
+
+    fetch(`/bookings/${fieldID}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    }).then((res) => res.json())
+    .then((data) => {
+        console.log(data);
+        const tableBody = document.getElementById('table-body');
+
+        for (let i = 0; i < data.length; i++) {
+            const row = document.createElement('tr');
+            const cell1 = document.createElement('td');
+            const cell2 = document.createElement('td');
+            const cell3 = document.createElement('td');
+
+
+            start = data[i].start;
+            end = data[i].end;
+          
+
+
+            if(start > 12) {
+                start = start - 12
+                start =start + " PM";
+            }
+
+            if(end > 12) {
+                end = end - 12;
+                end = end + " PM";
+            }
+
+            if(start < 12) {
+                start = start + " AM";
+            }
+
+            if(end < 12) {
+                end = end + " AM";
+            }
+
+            if(start == 12) {
+                start =start + " PM";
+            }
+
+            if(end == 12) {
+                end = end + " PM";
+            }
+            cell1.textContent = i+1;
+            cell2.textContent = data[i].date;
+            cell3.textContent = start + " - " + end;
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            row.appendChild(cell3);
+            tableBody.appendChild(row);
+          }
+
+    
+
+    })
+
+            
+
 
 
 

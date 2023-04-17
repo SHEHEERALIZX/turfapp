@@ -29,6 +29,8 @@ router.get('/checkout/:id',async (req,res)=>{
 
    field = await FieldModel.findById(id).lean()
 
+   const bookings = BookingModel.find({fieldId:id}).lean()
+
 
   if(req.session.error){
     const error = req.session.error
@@ -36,7 +38,7 @@ router.get('/checkout/:id',async (req,res)=>{
     
     return res.render('pages/single-turf',{field,error,user:req.session.user})
   }
-  return res.render('pages/single-turf',{field,user:req.session.user})
+  return res.render('pages/single-turf',{field,user:req.session.user,bookings})
 
 
 
@@ -46,6 +48,36 @@ router.get('/checkout/:id',async (req,res)=>{
 router.post('/checkout/:id',async (req,res)=>{
   const {startTime,endTime,date} = req.body
   console.log(req.body);
+
+  const start = startTime; // start time of the new booking
+  const end = endTime; // end time of the new booking
+  // Define the filter to check for overlapping bookings
+  const filter = {
+    fieldId: req.params.id,
+    date: date,
+    $or: [
+      { start: { $lt: end }, end: { $gt: start } }, // Existing booking starts before new booking ends and ends after new booking starts
+      { start: { $gte: start, $lte: end } }, // Existing booking starts during new booking
+      { end: { $gte: start, $lte: end } } // Existing booking ends during new booking
+    ]
+  };
+
+  const existingBooking = await BookingModel.findOne(filter);
+
+
+  if (existingBooking) {
+    // throw new Error('Time slot is already booked');
+
+    return res.send({status:500,message:"Time slot is already booked"})
+  }
+  
+
+
+
+
+
+
+
 
   const id = req.params.id
   
@@ -83,6 +115,30 @@ router.get('/bookings',async (req,res)=>{
     console.log(bookings);
     res.render('pages/bookings',{user:req.session.user,bookings})
   })  
+
+
+
+  // router.post('/bookings/:id',async (req,res)=>{
+  //     const bookings = await BookingModel.find({fieldId:req.params.id}).lean()
+  //     console.log(bookings);
+  //     res.send(bookings)
+  //   }
+  // )
+
+
+  router.post('/bookings/:id', async (req, res) => {
+    const currentDate = new Date();
+    const bookings = await BookingModel.find({
+      fieldId: req.params.id,
+      date: { $gte: currentDate.toISOString().slice(0, 10) } // filter by date greater than or equal to today's date
+    }).lean();
+  
+    console.log(bookings);
+    res.send(bookings);
+  });
+
+
+
 
 
 
