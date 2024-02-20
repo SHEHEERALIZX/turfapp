@@ -3,7 +3,8 @@ var router = express.Router();
 const User = require('../models/users');
 const moment =  require('moment')
 const FieldModel = require('../models/fields')
-const BookingModel = require('../models/bookings')
+const BookingModel = require('../models/bookings');
+const bookings = require('../models/bookings');
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
@@ -54,6 +55,7 @@ router.post('/checkout/:id',async (req,res)=>{
   // Define the filter to check for overlapping bookings
   const filter = {
     fieldId: req.params.id,
+    isCancelled : true,
     date: date,
     $or: [
       { start: { $lt: end }, end: { $gt: start } }, // Existing booking starts before new booking ends and ends after new booking starts
@@ -67,18 +69,9 @@ router.post('/checkout/:id',async (req,res)=>{
 
   if (existingBooking) {
     // throw new Error('Time slot is already booked');
-
     return res.send({status:500,message:"Time slot is already booked"})
   }
   
-
-
-
-
-
-
-
-
   const id = req.params.id
   
   const field = await FieldModel.findById(id).lean()
@@ -101,8 +94,13 @@ router.post('/checkout/:id',async (req,res)=>{
     } else {
       req.session.error = "Field booked successfully"
       return res.send({status:200,message:"Booking Successful",data:booking})
+      // return res.redirect('/sucesss')
     }
   })
+  })
+
+  router.get('/success',async (req,res)=>{
+    return res.render('pages/sucessPage')
 
   })
 
@@ -130,6 +128,7 @@ router.get('/bookings',async (req,res)=>{
     const currentDate = new Date();
     const bookings = await BookingModel.find({
       fieldId: req.params.id,
+      isCancelled : false,
       date: { $gte: currentDate.toISOString().slice(0, 10) } // filter by date greater than or equal to today's date
     }).lean();
   
@@ -137,8 +136,20 @@ router.get('/bookings',async (req,res)=>{
     res.send(bookings);
   });
 
+  router.get('/bookings/cancel/:id', async (req, res) => {
+    let booking = await BookingModel.findById(req.params.id)
+    booking.isCancelled = true;
+    booking.save();      
+    res.redirect("/bookings");
+  });
 
-
+  router.get('/confirmBooking/:id/:data', async (req, res) => {
+    console.log(req.params.data)
+    data = JSON.parse(Buffer.from(req.params.data, 'base64').toString());
+    let fieldId = req.params.id
+    data = {...data,fieldId}
+    res.render("pages/confirmBooking",{data,user:req.session.user});
+  });
 
 
 
@@ -159,7 +170,9 @@ router.post('/login', function(req, res, next) {
             res.status(500).send('Error logging in please try again.');
           } else {
             if(!user){
-              res.status(401).send('Phone Number or password incorrect');
+              // res.status(401).send('Phone Number or password incorrect');
+              let message = "Phone number or password incorrect"
+              res.render('pages/login',{errorMessage: message});
             } else {
               if(user.password === password){
                 const userdata = {
@@ -169,7 +182,9 @@ router.post('/login', function(req, res, next) {
                 req.session.user = userdata;
                 res.redirect('/');
               } else {
-                res.status(401).send('Phone Number or password incorrect');
+                // res.status(401).send('Phone Number or password incorrect');
+                let message = "Phone number or password incorrect"
+                res.render('pages/login',{errorMessage: message});
               }
             }
           }

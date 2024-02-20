@@ -32,6 +32,11 @@ const bookingSchema = new Schema({
         type: Number,
         required: true
     },
+    isCancelled:
+    {
+        type:Boolean,
+        default:false
+    }
     // description: {
     //     type: String,
     //     required: true

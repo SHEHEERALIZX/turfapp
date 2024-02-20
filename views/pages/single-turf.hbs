@@ -103,7 +103,7 @@
 
                 </div>
               <div class="col">
-                <button type="submit" class="btn btn-primary btn-block btn-lg " id="booking-button" disabled>
+                <button type="submit" class="btn btn-primary btn-block btn-lg " id="redirect-button" disabled>
                   Confirm Booking
                 </button>
               </div>
@@ -211,7 +211,7 @@
         var startTime = localStorage.getItem("startTime");
         var endTime = localStorage.getItem("endTime");
         var hourlyprice = localStorage.getItem("price");
-        button = document.getElementById('booking-button')
+        button = document.getElementById('redirect-button')
         date = localStorage.getItem("date")
         var price = 0;
         if (startTime != "" && endTime != "" && date != "") {
@@ -233,89 +233,98 @@
         document.getElementById("totalprice").innerHTML = "Total RS " + price;
     }
 
+  document.getElementById("redirect-button").addEventListener("click", function () {
+    let id = localStorage.getItem("fieldID")
+    var startTime = localStorage.getItem("startTime");
+    var endTime = localStorage.getItem("endTime");
+    var hourlyprice = localStorage.getItem("price");
+    let price = (endTime - startTime) * hourlyprice;
+     let    date = localStorage.getItem("date")
+    var serilized = JSON.stringify({ startTime ,endTime,hourlyprice,price,date})
+    window.location.replace(`/confirmBooking/${id}/${btoa(serilized)}`)
+  })
+
     // on click of booking button
-    document.getElementById("booking-button").addEventListener("click", function(){
-        var startTime = localStorage.getItem("startTime");
-        var endTime = localStorage.getItem("endTime");
-        var hourlyprice = localStorage.getItem("price");
-        var price = (endTime - startTime) * hourlyprice;
-        fieldID = localStorage.getItem("fieldID")
-        date = localStorage.getItem("date")
-
-        var data = {
-            "price": price,
-            "startTime": startTime,
-            "endTime": endTime,
-            "fieldID": fieldID,
-            "date": date
-        }
-        // send data to server
-        fetch(`/checkout/${fieldID}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        }).then((res) => res.json())
-        .then((data) => {
-            console.log(data);
-            if(data.status === 200) {
-
-
-                if(data.data.start > 12) {
-                    data.data.start = data.data.start - 12
-                    data.data.start = data.data.start + " PM";
-                }
-
-                if(data.data.end > 12) {
-                    data.data.end = data.data.end - 12;
-                    data.data.end = data.data.end + " PM";
-                }
-
-                if(data.data.start < 12) {
-                    data.data.start = data.data.start + " AM";
-                }
-
-                if(data.data.end < 12) {
-                    data.data.end = data.data.end + " AM";
-                }
-
-                if(data.data.start == 12) {
-                    data.data.start = data.data.start + " PM";
-                }
-
-                if(data.data.end == 12) {
-                    data.data.end = data.data.end + " PM";
-                }
-
-
-
-
-
-                document.getElementById("bookingtime").innerHTML = "Booking Time : " + data.data.start + " - " + data.data.end;
-                document.getElementById("bookingdate").innerHTML = "Booking Date : " + data.data.date;
-                document.getElementById("bookingprice").innerHTML = "Booking Price : " + data.data.price;
-                document.getElementById("bookingfield").innerHTML = "Booking Field : " + data.data.fieldName;
-
-                document.getElementById("successButton").click();
-
-                setTimeout(function(){ window.location.replace("/"); }, 3000);
-                document.getElementById("redirectelement").innerHTML = "Redirect to Home in 3 seconds";
-                setInterval(function(){
-                    var time = document.getElementById("redirectelement").innerHTML.split(" ")[4];
-                    time = time - 1;
-                    document.getElementById("redirectelement").innerHTML = "Redirect to Home in " + time + " seconds";
-                }, 1000);
-            } else if(data.status === 500) {
-                alert(data.message);
-            } else {
-                alert("Something went wrong");
-            }
-
-        })
-       
-
-    });
+//    document.getElementById("redirect-button").addEventListener("click", function(){
+//        var startTime = localStorage.getItem("startTime");
+//        var endTime = localStorage.getItem("endTime");
+//        var hourlyprice = localStorage.getItem("price");
+//        var price = (endTime - startTime) * hourlyprice;
+//        fieldID = localStorage.getItem("fieldID")
+//        date = localStorage.getItem("date")
+//
+//        var data = {
+//            "price": price,
+//            "startTime": startTime,
+//            "endTime": endTime,
+//            "fieldID": fieldID,
+//            "date": date
+//        }
+//        // send data to server
+//        fetch(`/checkout/${fieldID}`, {
+//            method: "POST",
+//            headers: {
+//                "Content-Type": "application/json",
+//            },
+//            body: JSON.stringify(data),
+//        }).then((res) => res.json())
+//        .then((data) => {
+//            console.log(data);
+//            if(data.status === 200) {
+//
+//
+//                if(data.data.start > 12) {
+//                    data.data.start = data.data.start - 12
+//                    data.data.start = data.data.start + " PM";
+//                }
+//
+//                if(data.data.end > 12) {
+//                    data.data.end = data.data.end - 12;
+//                    data.data.end = data.data.end + " PM";
+//                }
+//
+//                if(data.data.start < 12) {
+//                    data.data.start = data.data.start + " AM";
+//                }
+//
+//                if(data.data.end < 12) {
+//                    data.data.end = data.data.end + " AM";
+//                }
+//
+//                if(data.data.start == 12) {
+//                    data.data.start = data.data.start + " PM";
+//                }
+//
+//                if(data.data.end == 12) {
+//                    data.data.end = data.data.end + " PM";
+//                }
+//
+//
+//
+//
+//
+//                document.getElementById("bookingtime").innerHTML = "Booking Time : " + data.data.start + " - " + data.data.end;
+//                document.getElementById("bookingdate").innerHTML = "Booking Date : " + data.data.date;
+//                document.getElementById("bookingprice").innerHTML = "Booking Price : " + data.data.price;
+//                document.getElementById("bookingfield").innerHTML = "Booking Field : " + data.data.fieldName;
+//
+//                document.getElementById("successButton").click();
+//
+//                setTimeout(function(){ window.location.replace("/"); }, 3000);
+//                document.getElementById("redirectelement").innerHTML = "Redirect to Home in 3 seconds";
+//                setInterval(function(){
+//                    var time = document.getElementById("redirectelement").innerHTML.split(" ")[4];
+//                    time = time - 1;
+//                    document.getElementById("redirectelement").innerHTML = "Redirect to Home in " + time + " seconds";
+//                }, 1000);
+//            } else if(data.status === 500) {
+//                alert(data.message);
+//            } else {
+//                alert("Something went wrong");
+//            }
+//
+//        })
+//    });
 
     fieldID = localStorage.getItem("fieldID")
 

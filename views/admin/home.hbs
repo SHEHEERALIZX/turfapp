@@ -1,7 +1,7 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">#</th>
+      <th scope="col">No.</th>
       <th scope="col">Field Picture</th>
       <th scope="col">Field Name</th>
       <th scope="col">Price</th>
@@ -11,14 +11,49 @@
   <tbody>
     {{#each fields}}
     <tr>
-      <th scope="row">{{@index}}</th>
+      <th scope="row">{{inc @index}}</th>
       <th><img src="{{fieldPicture}}" width="100" height="auto" alt=""></th>
       <td>{{name}}</td>
       <td>{{price}}</td>
-      <td><a href="admin/delete/{{_id}}" class="btn btn-danger">Delete</a></td>
-
+      <td > <button id="modalDelete" type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" onclick='onDeleteClick(`{{_id}}`)'>Delete</button></td>
     </tr>
     {{/each}}
-    
   </tbody>
 </table>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+      </div>
+      <div class="modal-body">
+        Are you sure to delete this entry ? 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="onClose()">Close</button>
+        <button type="button" class="btn btn-danger" onclick="deleteHandler(deleteId)">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let deleteId = 0;
+function onDeleteClick(id) {
+  console.log({id})
+  deleteId= id
+  $('#exampleModal').modal('show')
+}
+function onClose()
+{
+  $('#exampleModal').modal('hide')
+}
+
+function deleteHandler(id)
+{
+  location.href = `admin/delete/${id}`
+  $('#exampleModal').modal('hide')
+}
+
+</script>
